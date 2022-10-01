@@ -1,12 +1,21 @@
-name: Tests and Style Checks
+name: Building
 
 on:
   workflow_call:
+    inputs:
+      os:
+        required: false
+        type: string
+        default: ubuntu-latest
+      java:
+        required: false
+        type: string
+        default: 11
 
 jobs:
-  critter:
-    runs-on: ubuntu-latest
-    name: Tests
+  Build:
+    runs-on: ${{ inputs.os }}
+    name: Build
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -14,14 +23,9 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 11
+          java-version: ${{ inputs.java }}
           distribution: 'temurin'
           cache: 'maven'
           server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-
       - name: Tests
         run: mvn -U install
