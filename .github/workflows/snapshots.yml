@@ -16,7 +16,7 @@ on:
         required: true
       MAVEN_GPG_PRIVATE_KEY:
         required: true
-      GITHUB_TOKEN:
+      GH_TOKEN:
         required: true
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
         run: |
           export GPG_TTY=$(tty)
           mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
-            -Drepository.url=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
+            -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
