@@ -2,6 +2,17 @@ name: Release
 
 on:
   workflow_call:
+    with:
+        MAVEN_USERNAME:
+          required: true
+          type: string
+        MAVEN_CENTRAL_TOKEN:
+          required: true
+          type: string
+        MAVEN_GPG_PASSPHRASE:
+          required: true
+          type: string
+
 
 jobs:
   release:
@@ -21,7 +32,7 @@ jobs:
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-private-key: ${{ inputs.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish
@@ -31,6 +42,6 @@ jobs:
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:
-          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_USERNAME: ${{ inputs.SONATYPE_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ inputs.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ inputs.MAVEN_GPG_PASSPHRASE }}
