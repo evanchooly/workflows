@@ -7,6 +7,9 @@ on:
         required: false
         type: string
         default: 11
+      gpg_passphrase:
+        required: true
+        type: string
 
 jobs:
   Snapshots:
@@ -31,7 +34,7 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
+          mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ inputs.gpg_passphrase }} \
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:
