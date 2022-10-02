@@ -24,10 +24,6 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Configure the job
-        run: |
-          mkdir -p ~/.m2
-          curl -o github.properties https://ghactions:${{ secrets.GH_PASSWD }}@evanchooly.com/private/files/github.properties
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
