@@ -1,4 +1,4 @@
-name: Building
+name: Pull Requests
 
 on:
   workflow_call:
