@@ -11,6 +11,9 @@ on:
         required: false
         type: string
         default: 11
+    secrets:
+      GH_OAUTH:
+        required: false
 
 jobs:
   Build:
@@ -29,3 +32,5 @@ jobs:
           server-id: central
       - name: Tests
         run: mvn -U install
+        env:
+          GITHUB_OAUTH: ${{ secrets.GH_OAUTH }}
