@@ -2,9 +2,6 @@ name: Pull Requests
 
 on:
   workflow_call:
-    secrets:
-      GH_OAUTH:
-        required: false
 
 jobs:
   Build:
@@ -23,8 +20,6 @@ jobs:
           server-id: central
       - name: Tests
         run: mvn -U install ${{ inputs.maven-flags }}
-        env:
-          GITHUB_OAUTH: ${{ secrets.GH_OAUTH }}
   dependabot:
     needs:
       - Build
