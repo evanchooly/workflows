@@ -2,23 +2,27 @@ name: Release
 
 on:
   workflow_call:
-#    with:
-#        MAVEN_USERNAME:
-#          required: true
-#          type: string
-#        MAVEN_CENTRAL_TOKEN:
-#          required: true
-#          type: string
-#        MAVEN_GPG_PASSPHRASE:
-#          required: true
-#          type: string
-
+    inputs:
+      java:
+        required: false
+        type: string
+        default: 11
+    secrets:
+      SONATYPE_USERNAME:
+        required: true
+      SONATYPE_PASSWORD:
+        required: true
+      MAVEN_GPG_PASSPHRASE:
+        required: true
+      GPG_PRIVATE_KEY:
+        required: true
+      GH_TOKEN:
+        required: true
 
 jobs:
-  release:
-    name: Release
+  Release:
+    name: Publish Release
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -26,7 +30,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 11
+          java-version: ${{ inputs.java }}
           distribution: 'temurin'
           cache: 'maven'
           server-id: central
@@ -39,7 +43,7 @@ jobs:
         run: |
           export GPG_TTY=$(tty)
           mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
-            -Drepository.url=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
+            -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
