@@ -14,7 +14,7 @@ on:
         required: true
       MAVEN_GPG_PASSPHRASE:
         required: true
-      MAVEN_GPG_PRIVATE_KEY:
+      GPG_PRIVATE_KEY:
         required: true
       GH_TOKEN:
         required: true
