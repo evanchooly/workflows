@@ -5,21 +5,7 @@ on:
 
 jobs:
   Build:
-    runs-on: ubuntu-latest
-    name: Build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Java
-        uses: actions/setup-java@v2
-        with:
-          java-version: ${{ inputs.java }}
-          distribution: 'temurin'
-          cache: 'maven'
-          server-id: central
-      - name: Tests
-        run: mvn -U install ${{ inputs.maven-flags }}
+    uses: evanchooly/workflows/.github/workflows/build.yml@master
   dependabot:
     needs:
       - Build
