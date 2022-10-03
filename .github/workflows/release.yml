@@ -18,6 +18,10 @@ on:
         required: true
       GH_TOKEN:
         required: true
+      GH_LOGIN:
+        required: false
+      GH_OAUTH:
+        required: false
 
 jobs:
   Release:
@@ -49,3 +53,5 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          GH_LOGIN: ${{ secrets.GH_LOGIN }}
+          GH_OAUTH: ${{ secrets.GH_OAUTH }}
