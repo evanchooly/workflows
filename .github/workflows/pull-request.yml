@@ -4,6 +4,10 @@ on:
   workflow_call:
 
 jobs:
+  Build:
+    uses: evanchooly/workflows/.github/workflows/build.yml@master
+    needs:
+      - Build
   dependabot:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' }}
