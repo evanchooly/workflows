@@ -11,6 +11,10 @@ on:
         required: false
         type: string
         default: 11
+      maven-flags:
+        required: false
+        type: string
+        default: ""
     secrets:
       GH_OAUTH:
         required: false
@@ -31,6 +35,6 @@ jobs:
           cache: 'maven'
           server-id: central
       - name: Tests
-        run: mvn -U install
+        run: mvn -U install ${{ inputs.maven-flags }}
         env:
           GITHUB_OAUTH: ${{ secrets.GH_OAUTH }}
