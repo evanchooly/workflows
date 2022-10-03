@@ -18,7 +18,7 @@ on:
         required: true
       GH_TOKEN:
         required: true
-      GITHUB_OAUTH:
+      GH_OAUTH:
         required: false
 
 jobs:
