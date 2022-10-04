@@ -11,10 +11,18 @@ on:
         required: false
         type: string
         default: 11
+      base-build:
+        required: false
+        type: boolean
+        default: false
       maven-flags:
         required: false
         type: string
         default: ""
+      archive-name:
+        required: false
+        type: string
+        default: "unused"
 
 jobs:
   Build:
@@ -31,14 +39,23 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           server-id: central
+      - name: Build
+        run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
       - name: Tests
-        run: mvn -U install ${{ inputs.maven-flags }}
+        if: ! inputs.base-build
+        run: mvn surefire:test ${{ inputs.maven-flags }}
       - name: collect logs
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: "logs-${{matrix.java}}-${{matrix.os}}-${{inputs.maven-flags}}"
+          name: "logs-${{ inputs.archive-name }}"
           path: |
             **/target/**/*.log
             **/target/**/*.err
+          retention-days: 3
+      - uses: actions/upload-artifact@v3
+        with:
+          name: "${{ inputs.archive-name }}"
+          path: |
+            **/target/**
           retention-days: 3
