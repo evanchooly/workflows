@@ -42,7 +42,7 @@ jobs:
       - name: Build
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
       - name: Tests
-        if: ! inputs.base-build
+        if: ${{ ! inputs.base-build }}
         run: mvn surefire:test ${{ inputs.maven-flags }}
       - name: collect logs
         uses: actions/upload-artifact@v3
