@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: "logs-${{matrix.java}}-${{matrix.os}}-${{inputs-maven-flags}}"
+          name: "logs-${{matrix.java}}-${{matrix.os}}-${{inputs.maven-flags}}"
           path: |
             **/target/**/*.log
             **/target/**/*.err
