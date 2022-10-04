@@ -11,10 +11,6 @@ on:
         required: false
         type: string
         default: 11
-      base-build:
-        required: false
-        type: boolean
-        default: false
       maven-flags:
         required: false
         type: string
@@ -40,10 +36,7 @@ jobs:
           cache: 'maven'
           server-id: central
       - name: Build
-        run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
-      - name: Tests
-        if: ${{ ! inputs.base-build }}
-        run: mvn surefire:test ${{ inputs.maven-flags }}
+        run: mvn -U install ${{ inputs.maven-flags }}
       - name: collect logs
         uses: actions/upload-artifact@v3
         if: failure()
@@ -52,10 +45,4 @@ jobs:
           path: |
             **/target/**/*.log
             **/target/**/*.err
-          retention-days: 3
-      - uses: actions/upload-artifact@v3
-        with:
-          name: "${{ inputs.archive-name }}"
-          path: |
-            **/target/**
           retention-days: 3
