@@ -2,10 +2,27 @@ name: Pull Requests
 
 on:
   workflow_call:
+    inputs:
+      os:
+        required: false
+        type: string
+        default: ubuntu-latest
+      java:
+        required: false
+        type: string
+        default: 11
+      maven-flags:
+        required: false
+        type: string
+        default: ""
 
 jobs:
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
+    with:
+      java: ${{ inputs.java }}
+      os: ${{ inputs.os }}
+      maven-flags: ${{ inputs.maven-flags }}
   dependabot:
     needs:
       - Build
