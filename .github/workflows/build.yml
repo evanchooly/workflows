@@ -33,3 +33,12 @@ jobs:
           server-id: central
       - name: Tests
         run: mvn -U install ${{ inputs.maven-flags }}
+      - name: collect logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: "logs-${{matrix.java}}-${{matrix.os}}-${{inputs-maven-flags}}"
+          path: |
+            **/target/**/*.log
+            **/target/**/*.err
+          retention-days: 3
