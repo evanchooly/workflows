@@ -21,9 +21,11 @@ on:
       reuseBuild:
         required: false
         type: string
+        default: ""
       saveBuild:
         required: false
         type: string
+        default: ""
 
 jobs:
   Build:
@@ -41,22 +43,23 @@ jobs:
           cache: 'maven'
           server-id: central
       - name: Build with Tests
-        if: "${{ inputs.saveBuild }} == 0 && ${{ inputs.reuseBuild }} == 0"
+        if: "${{ inputs.saveBuild }} == "" && ${{ inputs.reuseBuild }} == """
         run: mvn -U install ${{ inputs.maven-flags }}
       - name: Build without Tests
-        if: "${{ inputs.saveBuild }} != 0 && ${{ inputs.reuseBuild }} == 0"
+        if: "${{ inputs.saveBuild }} != "" && ${{ inputs.reuseBuild }} == """
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
 
       - name: Download build output
-        if: ${{ inputs.reuseBuild }}
+        if: "${{ inputs.reuseBuild }} != """
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.reuseBuild }}
       - name: Build without Tests
-        if: ${{ inputs.reuseBuild }}
+        if: "${{ inputs.reuseBuild }} != """
         run: mvn surefire:test ${{ inputs.maven-flags }}
+
       - name: Save build output
-        if: ${{ inputs.saveBuild }}
+        if: "${{ inputs.saveBuild }} != """
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.saveBuild }}
