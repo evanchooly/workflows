@@ -6,7 +6,7 @@ on:
       archive-name:
         required: false
         type: string
-        default: ""
+        default: ''
       java:
         required: false
         type: string
@@ -14,7 +14,7 @@ on:
       maven-flags:
         required: false
         type: string
-        default: ""
+        default: ''
       os:
         required: false
         type: string
@@ -22,11 +22,11 @@ on:
       reuseBuild:
         required: false
         type: string
-        default: ""
+        default: ''
       saveBuild:
         required: false
         type: string
-        default: ""
+        default: ''
 
 jobs:
   Build:
