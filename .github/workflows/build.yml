@@ -51,6 +51,15 @@ jobs:
       - name: Build without Tests
         if: inputs.saveBuild != '' && inputs.reuseBuild == ''
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
+      - name: Save build output
+        if: inputs.saveBuild != '' && inputs.reuseBuild == ''
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.saveBuild }}
+          path: |
+            **/target/**
+          retention-days: 5
+
 
       - name: Download build output
         if: inputs.reuseBuild != ''
@@ -60,15 +69,6 @@ jobs:
       - name: Test without building
         if: inputs.reuseBuild != ''
         run: mvn surefire:test ${{ inputs.maven-flags }}
-
-      - name: Save build output
-        if: inputs.saveBuild != ''
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ inputs.saveBuild }}
-          path: |
-            **/target/**
-          retention-days: 5
 
       - name: collect logs
         uses: actions/upload-artifact@v3
