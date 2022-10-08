@@ -57,7 +57,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.reuseBuild }}
-      - name: Run Tests Reusing a Build
+      - name: Test without building
         if: inputs.reuseBuild != ''
         run: mvn surefire:test ${{ inputs.maven-flags }}
 
