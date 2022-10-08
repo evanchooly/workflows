@@ -45,11 +45,11 @@ jobs:
           server-id: central
 
       - name: Build with Tests
-        if: inputs.saveBuild == "" && inputs.reuseBuild == ""
+        if: inputs.saveBuild == '' && inputs.reuseBuild == ''
         run: mvn -U install ${{ inputs.maven-flags }}
 
       - name: Build without Tests
-        if: inputs.saveBuild != "" && inputs.reuseBuild == ""
+        if: inputs.saveBuild != '' && inputs.reuseBuild == ''
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
 
       - name: Download build output
