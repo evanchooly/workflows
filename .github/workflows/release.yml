@@ -17,7 +17,7 @@ on:
       GPG_PRIVATE_KEY:
         required: true
       GH_TOKEN:
-        required: true
+        required: false
 
 jobs:
   Release:
@@ -49,4 +49,4 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-          GITHUB_OAUTH: ${{ GH_TOKEN }}
+          GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
