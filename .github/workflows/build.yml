@@ -55,7 +55,11 @@ jobs:
 
       - name: Build without Tests
         if: inputs.saveBuild != '' && inputs.reuseBuild == ''
-        run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
+        run: |
+          mvn -U install -DskipTests ${{ inputs.maven-flags }}
+          find . | grep target
+          pwd
+          find . | grep target | wc -l
       - name: Save build output
         if: inputs.saveBuild != '' && inputs.reuseBuild == ''
         uses: actions/upload-artifact@v3
