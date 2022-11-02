@@ -55,11 +55,7 @@ jobs:
 
       - name: Build without Tests
         if: inputs.saveBuild
-        run: |
-          mvn -U install -DskipTests ${{ inputs.maven-flags }}
-          find . | grep target
-          pwd
-          find . | grep target | wc -l
+        run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
       - name: Save build output
         if: inputs.saveBuild
         uses: actions/upload-artifact@v3
@@ -77,11 +73,7 @@ jobs:
           name: build-${{ github.run_id }}
       - name: Test without building
         if: inputs.reuseBuild
-        run: |
-          find . | grep target
-          pwd
-          find . | grep target | wc -l
-          mvn surefire:test ${{ inputs.maven-flags }}
+        run: mvn surefire:test ${{ inputs.maven-flags }}
 
       - name: collect logs
         uses: actions/upload-artifact@v3
