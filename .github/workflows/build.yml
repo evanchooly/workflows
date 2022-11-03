@@ -6,7 +6,7 @@ on:
       archive-name:
         required: false
         type: string
-        default: ''
+        default: "${{ github.sha }}-${{ github.run_id }}"
       java:
         required: false
         type: string
@@ -64,7 +64,6 @@ jobs:
           path: |
             **/target/**
           retention-days: 5
-
 
       - name: Download build output
         if: inputs.reuseBuild
