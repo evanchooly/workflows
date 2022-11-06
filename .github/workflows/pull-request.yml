@@ -24,7 +24,7 @@ jobs:
       os: ${{ inputs.os }}
       maven-flags: ${{ inputs.maven-flags }}
   dependabot:
-    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') }}
+    if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' }}
     name: Automerge dependabot PRs
     needs:
       - Build
