@@ -32,9 +32,29 @@ on:
         required: false
 
 jobs:
+  CodeAudits:
+    runs-on: ${{ inputs.os }}
+    name: Code Audits
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java }}
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: central
+
+      - name: Build with Tests
+        run: mvn -U install "-Dcode-audits"
+
   Build:
     runs-on: ${{ inputs.os }}
     name: Build
+    needs:
+      - CodeAudits
     steps:
       - name: Checkout
         uses: actions/checkout@v3
