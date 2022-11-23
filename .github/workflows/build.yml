@@ -35,6 +35,7 @@ jobs:
   CodeAudits:
     runs-on: ${{ inputs.os }}
     name: Code Audits
+    if: ${{ !inputs.reuseBuild && !inputs.saveBuild }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -47,7 +48,7 @@ jobs:
           cache: 'maven'
           server-id: central
 
-      - name: Build with Tests
+      - name: Run Audits
         run: mvn -U install "-Dcode-audits"
 
   Build:
@@ -67,12 +68,14 @@ jobs:
           cache: 'maven'
           server-id: central
 
+      #####  Standard build and testing
       - name: Build with Tests
         if: ${{ !inputs.saveBuild && !inputs.reuseBuild }}
         run: mvn -U install ${{ inputs.maven-flags }}
         env:
           GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
 
+      #####  Saving the build.  Build the binaries and upload the archive
       - name: Build without Tests
         if: inputs.saveBuild
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
@@ -85,6 +88,7 @@ jobs:
             **/target/**
           retention-days: 5
 
+      #####  Reusing the build.  Download the binaries and run only the tests
       - name: Download build output
         if: inputs.reuseBuild
         uses: actions/download-artifact@v3
