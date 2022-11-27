@@ -35,7 +35,6 @@ jobs:
   CodeAudits:
     runs-on: ${{ inputs.os }}
     name: Code Audits
-    if: ${{ !inputs.reuseBuild }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,6 +48,7 @@ jobs:
           server-id: central
 
       - name: Run Audits
+        if: ${{ !inputs.reuseBuild }}
         run: mvn -U install "-Dcode-audits"
 
   Build:
