@@ -49,7 +49,7 @@ jobs:
 
       - name: Run Audits
         if: ${{ !inputs.reuseBuild }}
-        run: mvn -U install "-Dcode-audits"
+        run: mvn -U install -Dcode-audits
 
   Build:
     runs-on: ${{ inputs.os }}
