@@ -35,7 +35,7 @@ jobs:
   CodeAudits:
     runs-on: ${{ inputs.os }}
     name: Code Audits
-    if: ${{ !inputs.reuseBuild && !inputs.saveBuild }}
+    if: ${{ !inputs.reuseBuild }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
