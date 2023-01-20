@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: "${{ github.sha }}-${{ github.run_id }}"
+      experimental:
+        required: false
+        type: boolean
+        default: false
       java:
         required: false
         type: string
@@ -54,6 +58,7 @@ jobs:
   Build:
     runs-on: ${{ inputs.os }}
     name: Build
+    continue-on-error: ${{ inputs.experimental }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
