@@ -69,6 +69,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           server-id: central
+        continue-on-error: ${{ inputs.experimental }}
 
       #####  Standard build and testing
       - name: Build with Tests
