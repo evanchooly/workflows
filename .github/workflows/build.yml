@@ -22,7 +22,7 @@ on:
       os:
         required: false
         type: string
-        default: "ubuntu-latest"
+        default: 'ubuntu-latest'
       reuseBuild:
         required: false
         type: boolean
