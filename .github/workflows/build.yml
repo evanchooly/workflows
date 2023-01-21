@@ -7,10 +7,6 @@ on:
         required: false
         type: string
         default: "${{ github.sha }}-${{ github.run_id }}"
-      experimental:
-        required: false
-        type: boolean
-        default: false
       java:
         required: false
         type: string
@@ -22,7 +18,7 @@ on:
       os:
         required: false
         type: string
-        default: 'ubuntu-latest'
+        default: ubuntu-latest
       reuseBuild:
         required: false
         type: boolean
