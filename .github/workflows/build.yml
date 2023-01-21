@@ -58,7 +58,6 @@ jobs:
   Build:
     runs-on: ${{ inputs.os }}
     name: Build
-    continue-on-error: ${{ inputs.experimental }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
