@@ -94,9 +94,7 @@ jobs:
           name: build-${{ github.run_id }}
       - name: Test without building
         if: inputs.reuseBuild
-        run: |
-          mvn surefire:test jar:jar ${{ inputs.maven-flags }}
-          mvn install:install-file -Dfile=$( echo target/*-SNAPSHOT.jar )
+        run: mvn surefire:test ${{ inputs.maven-flags }}
 
       - name: collect logs
         uses: actions/upload-artifact@v3
