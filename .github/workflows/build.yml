@@ -57,7 +57,7 @@ jobs:
 
   Build:
     runs-on: ${{ inputs.os }}
-    continue-on-error: ${{ !inputs.optional }}
+    continue-on-error: ${{ inputs.optional }}
     name: Build
     steps:
       - name: Checkout
