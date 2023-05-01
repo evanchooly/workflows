@@ -15,6 +15,10 @@ on:
         required: false
         type: string
         default: ''
+      optional:
+        required: false
+        type: boolean
+        default: false
       os:
         required: false
         type: string
@@ -53,6 +57,7 @@ jobs:
 
   Build:
     runs-on: ${{ inputs.os }}
+    continue-on-error: ${{ !inputs.optional }}
     name: Build
     steps:
       - name: Checkout
