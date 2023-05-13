@@ -43,16 +43,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Cache maven artifacts
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: audit-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            audit-${{ github.sha }}
+            audit-
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: ${{ inputs.java }}
           distribution: 'temurin'
-          cache: 'maven'
           server-id: central
-          restore-keys: |
-            build-${{ github.sha }}
-            build-
 
       - name: Run Audits
         if: ${{ !inputs.reuseBuild }}
@@ -66,16 +71,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Cache maven artifacts
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: build-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            build-${{ github.sha }}
+            build-
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: ${{ inputs.java }}
           distribution: 'temurin'
-          cache: 'maven'
           server-id: central
-          restore-keys: |
-            build-${{ github.sha }}
-            build-
 
       #####  Standard build and testing
       - name: Build with Tests
