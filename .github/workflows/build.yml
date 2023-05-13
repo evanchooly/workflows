@@ -46,7 +46,9 @@ jobs:
       - name: Cache maven artifacts
         uses: actions/cache@v3
         with:
-          path: ~/.m2
+          path: |
+            ~/.m2
+            **/target
           key: audit-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             audit-${{ github.sha }}
@@ -74,7 +76,9 @@ jobs:
       - name: Cache maven artifacts
         uses: actions/cache@v3
         with:
-          path: ~/.m2
+          path: |
+            ~/.m2
+            **/target
           key: build-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             build-${{ github.sha }}
@@ -98,21 +102,21 @@ jobs:
       - name: Build without Tests
         if: inputs.saveBuild
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
-      - name: Save build output
-        if: inputs.saveBuild
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-${{ github.run_id }}
-          path: |
-            **/target/**
-          retention-days: 5
+#      - name: Save build output
+#        if: inputs.saveBuild
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: build-${{ github.run_id }}
+#          path: |
+#            **/target/**
+#          retention-days: 5
 
       #####  Reusing the build.  Download the binaries and run only the tests
-      - name: Download build output
-        if: inputs.reuseBuild
-        uses: actions/download-artifact@v3
-        with:
-          name: build-${{ github.run_id }}
+#      - name: Download build output
+#        if: inputs.reuseBuild
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: build-${{ github.run_id }}
       - name: Test without building
         if: inputs.reuseBuild
         run: mvn surefire:test ${{ inputs.maven-flags }}
