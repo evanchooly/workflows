@@ -36,34 +36,6 @@ on:
         required: false
 
 jobs:
-  CodeAudits:
-    runs-on: ${{ inputs.os }}
-    name: Code Audits
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Cache maven artifacts
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2
-            **/target
-          key: audit-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            audit-${{ github.sha }}
-            audit-
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ inputs.java }}
-          distribution: 'temurin'
-          server-id: central
-
-      - name: Run Audits
-        if: ${{ !inputs.reuseBuild }}
-        run: mvn -U install -Dcode-audits
 
   Build:
     runs-on: ${{ inputs.os }}

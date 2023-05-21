@@ -1,0 +1,28 @@
+name: Build and Test
+
+on:
+  workflow_call:
+    inputs:
+      java:
+        required: false
+        type: string
+        default: 11
+
+jobs:
+  CodeAudits:
+    runs-on: ubuntu-latest
+    name: Code Audits
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java }}
+          distribution: 'temurin'
+          server-id: central
+          cache: maven
+
+      - name: Run Audits
+        run: mvn -U install -Dcode-audits
