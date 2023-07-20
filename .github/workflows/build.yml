@@ -53,8 +53,7 @@ jobs:
             **/target
           key: build-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            build-${{ github.sha }}
-            build-
+            build-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
 
       - name: Setup Java
         uses: actions/setup-java@v3
