@@ -8,9 +8,9 @@ on:
         type: string
         default: 11
     secrets:
-      SONATYPE_USERNAME:
+      JRELEASER_NEXUS2_USERNAME:
         required: true
-      SONATYPE_PASSWORD:
+      JRELEASER_NEXUS2_PASSWORD:
         required: true
       MAVEN_GPG_PASSPHRASE:
         required: true
@@ -44,19 +44,25 @@ jobs:
           java-version: ${{ inputs.java }}
           distribution: 'temurin'
           server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
+          server-username: JRELEASER_NEXUS2_USERNAME
+          server-password: JRELEASER_NEXUS2_PASSWORD
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish
-        run: |
-          export GPG_TTY=$(tty)
-          mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
-            -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git \
-            -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
+        run: mvn -e -Plocal-deploy -Drelease deploy jreleaser:full-release
         env:
-          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
+          JRELEASER_NEXUS2_PASSWORD: ${{ secrets.JRELEASER_NEXUS2_PASSWORD }}
+          JRELEASER_NEXUS2_USERNAME: ${{ secrets.JRELEASER_NEXUS2_USERNAME }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-          GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
+
+      - name: collect logs
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: "jreleaser-trace.log"
+          path: target/jreleaser/trace.log
