@@ -34,9 +34,9 @@ jobs:
           path: |
             ~/.m2
             **/target
-          key: build-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
+          key: build-${{ GITHUB_REF_NAME }}
           restore-keys: |
-            build-${{ github.sha }}-${{ hashFiles('**/pom.xml') }}
+            build-${{ GITHUB_REF_NAME }}
 
       - name: Setup Java
         uses: actions/setup-java@v3
