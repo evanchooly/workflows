@@ -8,16 +8,24 @@ on:
         type: string
         default: 11
     secrets:
-      JRELEASER_NEXUS2_USERNAME:
+      BLUESKY_PASSWORD:
+        required: true
+      BLUESKY_USERNAME:
+        required: true
+      JRELEASER_GITHUB_TOKEN:
+        required: true
+      JRELEASER_GPG_PASSPHRASE:
+        required: true
+      JRELEASER_GPG_PUBLIC_KEY:
+        required: true
+      JRELEASER_GPG_SECRET_KEY:
         required: true
       JRELEASER_NEXUS2_PASSWORD:
         required: true
-      MAVEN_GPG_PASSPHRASE:
+      JRELEASER_NEXUS2_USERNAME:
         required: true
-      GPG_PRIVATE_KEY:
+      MASTODON_ACCESS_KEY:
         required: true
-      GH_TOKEN:
-        required: false
 
 jobs:
   Release:
@@ -46,7 +54,7 @@ jobs:
           server-id: central
           server-username: JRELEASER_NEXUS2_USERNAME
           server-password: JRELEASER_NEXUS2_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish

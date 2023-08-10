@@ -31,9 +31,6 @@ on:
         required: false
         type: boolean
         default: false
-    secrets:
-      GH_TOKEN:
-        required: false
 
 jobs:
 
@@ -65,8 +62,6 @@ jobs:
       - name: Build with Tests
         if: ${{ !inputs.saveBuild && !inputs.reuseBuild }}
         run: mvn -U install ${{ inputs.maven-flags }}
-        env:
-          GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
 
       - name: Build without Tests
         if: inputs.saveBuild
