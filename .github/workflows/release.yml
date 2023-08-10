@@ -42,9 +42,9 @@ jobs:
           path: |
             ~/.m2
             **/target
-          key: build-${{ GITHUB_REF_NAME }}
+          key: build-${{ vars.GITHUB_REF_NAME }}
           restore-keys: |
-            build-${{ GITHUB_REF_NAME }}
+            build-${{ vars.GITHUB_REF_NAME }}
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -55,18 +55,20 @@ jobs:
           server-username: JRELEASER_NEXUS2_USERNAME
           server-password: JRELEASER_NEXUS2_PASSWORD
           gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-passphrase: JRELEASER_GPG_PASSPHRASE
 
       - name: Publish
-        run: mvn -e -Plocal-deploy -Drelease deploy jreleaser:full-release
+        run: mvn -e -Drelease deploy jreleaser:full-release
         env:
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.JRELEASER_GITHUB_TOKEN }}
-          JRELEASER_GPG_PASSPHRASE: ${{ secrets.JRELEASER_GPG_PASSPHRASE }}
-          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.JRELEASER_GPG_PUBLIC_KEY }}
-          JRELEASER_GPG_SECRET_KEY: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
-          JRELEASER_NEXUS2_PASSWORD: ${{ secrets.JRELEASER_NEXUS2_PASSWORD }}
-          JRELEASER_NEXUS2_USERNAME: ${{ secrets.JRELEASER_NEXUS2_USERNAME }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
+          BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
+          JRELEASER_GITHUB_TOKEN: ${{secrets.JRELEASER_GITHUB_TOKEN }}
+          JRELEASER_GPG_PASSPHRASE: ${{secrets.JRELEASER_GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{secrets.JRELEASER_GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{secrets.JRELEASER_GPG_SECRET_KEY }}
+          JRELEASER_NEXUS2_PASSWORD: ${{secrets.JRELEASER_NEXUS2_PASSWORD }}
+          JRELEASER_NEXUS2_USERNAME: ${{secrets.JRELEASER_NEXUS2_USERNAME }}
+          MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
 
       - name: collect logs
         uses: actions/upload-artifact@v3
