@@ -48,9 +48,9 @@ jobs:
           path: |
             ~/.m2
             **/target
-          key: build-${{ vars.GITHUB_REF_NAME }}
+          key: build-${{ github.ref_name }}
           restore-keys: |
-            build-${{ vars.GITHUB_REF_NAME }}
+            build-${{ github.ref_name }}
 
       - name: Setup Java
         uses: actions/setup-java@v3
