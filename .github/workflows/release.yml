@@ -47,6 +47,9 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}-${{ hashFiles('.github/**') }}
           restore-keys: maven-
 
+      - name: Clear snapshot jars
+        run: find target -name '*-SNAPSHOT.*.jar' | xarg rm -f
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
