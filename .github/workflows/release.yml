@@ -48,7 +48,7 @@ jobs:
           restore-keys: maven-
 
       - name: Clear snapshot jars
-        run: find target -name '*-SNAPSHOT.*.jar' | xarg rm -f
+        run: find target -name '*-SNAPSHOT.*.jar' | xargs rm -f
 
       - name: Setup Java
         uses: actions/setup-java@v3
