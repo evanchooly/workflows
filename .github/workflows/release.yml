@@ -84,6 +84,9 @@ jobs:
           JRELEASER_NEXUS2_USERNAME: ${{secrets.JRELEASER_NEXUS2_USERNAME }}
           MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
 
+      - name: Maven version
+        run: mvn --version
+
       - name: Results
         run: find target/localRepo
 
