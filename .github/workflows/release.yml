@@ -71,8 +71,24 @@ jobs:
         run: |
           echo "MVN_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
 
+      - name: Local Deploy
+        run: mvn -e -Drelease deploy -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
+        env:
+          BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
+          BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
+          JRELEASER_GITHUB_TOKEN: ${{secrets.JRELEASER_GITHUB_TOKEN }}
+          JRELEASER_GPG_PASSPHRASE: ${{secrets.JRELEASER_GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{secrets.JRELEASER_GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{secrets.JRELEASER_GPG_SECRET_KEY }}
+          JRELEASER_NEXUS2_PASSWORD: ${{secrets.JRELEASER_NEXUS2_PASSWORD }}
+          JRELEASER_NEXUS2_USERNAME: ${{secrets.JRELEASER_NEXUS2_USERNAME }}
+          MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
+
+      - name: Results
+        run: find target/
+
       - name: Publish
-        run: mvn -e -Drelease deploy jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
+        run: mvn -e -Drelease jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
@@ -88,5 +104,5 @@ jobs:
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: "jreleaser-trace.log"
-          path: target/jreleaser/trace.log
+          name: "jreleaser.log"
+          path: 'target/jreleaser/*'
