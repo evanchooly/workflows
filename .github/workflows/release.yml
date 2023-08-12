@@ -9,9 +9,9 @@ on:
         default: 11
     secrets:
       BLUESKY_PASSWORD:
-        required: true
+        required: false
       BLUESKY_USERNAME:
-        required: true
+        required: false
       JRELEASER_GITHUB_TOKEN:
         required: true
       JRELEASER_GPG_PASSPHRASE:
@@ -25,7 +25,7 @@ on:
       JRELEASER_NEXUS2_USERNAME:
         required: true
       MASTODON_ACCESS_KEY:
-        required: true
+        required: false
 
 jobs:
   Release:
@@ -42,9 +42,8 @@ jobs:
           path: |
             ~/.m2
             **/target
-          key: build-${{ github.ref_name }}
-          restore-keys: |
-            build-${{ github.ref_name }}
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -57,8 +56,14 @@ jobs:
           gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
           gpg-passphrase: JRELEASER_GPG_PASSPHRASE
 
+      - name: Check for snapshot
+        id: release
+        shell: bash
+        run: |
+          echo "MVN_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
+
       - name: Publish
-        run: mvn -e -Drelease deploy jreleaser:full-release
+        run: mvn -e -Drelease deploy jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
