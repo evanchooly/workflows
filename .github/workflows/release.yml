@@ -44,7 +44,7 @@ jobs:
           path: |
             ~/.m2
             **/target
-          key: maven-${{ hashFiles('**/pom.xml') }}-${{ hashFiles('.github/**') }}
+          key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
 
       - name: Setup Java
@@ -85,7 +85,7 @@ jobs:
           MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
 
       - name: Results
-        run: find target/
+        run: find target/localRepo
 
       - name: Publish
         run: mvn -e -Drelease jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
