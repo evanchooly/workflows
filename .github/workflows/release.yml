@@ -69,10 +69,10 @@ jobs:
         id: release
         shell: bash
         run: |
-          echo "MVN_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
+          echo "SNAPSHOT_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
 
       - name: Local Deploy
-        run: mvn -e -Drelease deploy -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
+        run: mvn -e -Drelease deploy -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
@@ -88,7 +88,7 @@ jobs:
         run: find target/localRepo
 
       - name: Publish
-        run: mvn -e -Drelease jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.MVN_RELEASE }}
+        run: mvn -e -Drelease jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
