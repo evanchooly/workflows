@@ -44,7 +44,7 @@ jobs:
           path: |
             ~/.m2
             **/target
-          key: maven-${{ hashFiles('**/pom.xml') }}
+          key: maven-${{ hashFiles('**/pom.xml') }}-${{ hashFiles('.github/**') }}
           restore-keys: maven-
 
       - name: Setup Java
