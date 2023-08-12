@@ -56,6 +56,13 @@ jobs:
           gpg-private-key: ${{ secrets.JRELEASER_GPG_SECRET_KEY }}
           gpg-passphrase: JRELEASER_GPG_PASSPHRASE
 
+      - name: Version
+        id: vars
+        shell: bash
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
+
       - name: Check for snapshot
         id: release
         shell: bash
