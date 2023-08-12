@@ -36,15 +36,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache maven artifacts
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2
-            **/target
-          key: maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: maven-
-
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
