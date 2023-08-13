@@ -71,6 +71,9 @@ jobs:
         run: |
           echo "SNAPSHOT_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
 
+      - name: Show deployables
+        run: find target/localRepo | xargs ls -al
+
       - name: Publish
         run: mvn -e -Drelease clean deploy jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
         env:
