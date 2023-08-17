@@ -88,4 +88,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: "jreleaser.log"
-          path: 'target/jreleaser/*'
+          path: '**/target/jreleaser/*'
