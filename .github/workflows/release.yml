@@ -59,18 +59,18 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
-      - name: Version
-        id: vars
-        shell: bash
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
-
-      - name: Check for snapshot
-        id: release
-        shell: bash
-        run: |
-          echo "SNAPSHOT_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
+#      - name: Version
+#        id: vars
+#        shell: bash
+#        run: |
+#          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+#          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
+#
+#      - name: Check for snapshot
+#        id: release
+#        shell: bash
+#        run: |
+#          echo "SNAPSHOT_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
 
       - name: Publish
         run: |
@@ -84,8 +84,8 @@ jobs:
           GPG_PASSPHRASE    : ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           GITHUB_OAUTH      : ${{ secrets.GH_PUSH_TOKEN }}
 
-      - name: collect logs
-        uses: actions/upload-artifact@v3
-        with:
-          name: "jreleaser.log"
-          path: '**/target/jreleaser/*'
+#      - name: collect logs
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: "jreleaser.log"
+#          path: '**/target/jreleaser/*'
