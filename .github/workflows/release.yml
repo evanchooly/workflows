@@ -75,8 +75,8 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
-          -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git \
+          mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+          -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
           -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:
           SONATYPE_USERNAME : ${{ secrets.SONATYPE_USERNAME }}
