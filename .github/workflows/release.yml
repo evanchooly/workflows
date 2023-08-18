@@ -56,7 +56,7 @@ jobs:
           server-id: central
           server-username: SONATYPE_USERNAME
           server-password: SONATYPE_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEY }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
       - name: Version
