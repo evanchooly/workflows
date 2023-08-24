@@ -79,6 +79,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/target'
+          key: ${{ steps.maven-cache-key.outputs.key }}
           restore-keys: ${{ steps.maven-cache-key.outputs.key }}
           fail-on-cache-miss: true
 
