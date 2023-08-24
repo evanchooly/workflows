@@ -47,16 +47,8 @@ jobs:
       - name: Generate cache key
         id: maven-cache-key
         run: |
-          echo "key=maven-cache-$(git branch --show-current)-${{ hashFiles('**/pom.xml') }}" >> $GITHUB_OUTPUT
+          echo "key=maven-cache-$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
         shell: bash
-
-      - name: Cache maven artifacts
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2
-            **/target
-          key: ${{ steps.maven-cache-key.outputs.key }}
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -64,6 +56,7 @@ jobs:
           java-version: ${{ inputs.java }}
           distribution: 'temurin'
           server-id: central
+          cache: maven
 
       - name: Build with Tests
         if: ${{ !inputs.saveBuild && !inputs.reuseBuild }}
@@ -72,6 +65,21 @@ jobs:
       - name: Build without Tests
         if: inputs.saveBuild
         run: mvn -U install -DskipTests ${{ inputs.maven-flags }}
+
+      - name: Cache build artifacts
+        if: inputs.saveBuild
+        uses: actions/cache@v3
+        with:
+          path: '**/target'
+          key: ${{ steps.maven-cache-key.outputs.key }}
+
+      - name: Restore cached build artifacts
+        if: inputs.reuseBuild
+        uses: actions/cache@v3
+        with:
+          path: '**/target'
+          restore-key: ${{ steps.maven-cache-key.outputs.key }}
+          fail-on-cache-miss: true
 
       - name: Test without building
         if: inputs.reuseBuild
@@ -85,4 +93,4 @@ jobs:
           path: |
             **/target/**/*.log
             **/target/**/*.err
-          retention-days: 3
+          retention-days: 7
