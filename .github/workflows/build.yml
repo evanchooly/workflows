@@ -31,9 +31,14 @@ on:
         required: false
         type: boolean
         default: false
+    secrets:
+      GH_TOKEN:
+        required: false
+
+env:
+  GITHUB_OAUTH: ${{ GH_TOKEN }}
 
 jobs:
-
   Build:
     runs-on: ${{ inputs.os }}
     continue-on-error: ${{ inputs.optional }}
