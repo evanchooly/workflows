@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 11
+      maven:
+        required: false
+        type: string
+        default: mvn
     secrets:
       GH_PUSH_TOKEN:
         required: true
@@ -63,7 +67,7 @@ jobs:
 #        id: vars
 #        shell: bash
 #        run: |
-#          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+#          VERSION=$(${{ inputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
 #          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 #
 #      - name: Check for snapshot
@@ -75,7 +79,7 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          mvn --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+          ${{ inputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
           -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
           -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:

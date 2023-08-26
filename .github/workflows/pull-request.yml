@@ -12,6 +12,10 @@ on:
         required: false
         type: string
         default: 11
+      maven:
+        required: false
+        type: string
+        default: mvn
       maven-flags:
         required: false
         type: string
@@ -23,6 +27,7 @@ jobs:
     with:
       java: ${{ inputs.java }}
       os: ${{ inputs.os }}
+      maven: ${{ inputs.maven }}
       maven-flags: ${{ inputs.maven-flags }}
   dependabot:
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' }}

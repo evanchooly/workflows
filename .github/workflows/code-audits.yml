@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 11
+      maven:
+        required: false
+        type: string
+        default: mvn
 
 jobs:
   CodeAudits:
@@ -25,4 +29,4 @@ jobs:
           cache: maven
 
       - name: Run Audits
-        run: mvn -U install -Dcode-audits
+        run: ${{ inputs.maven }} -U install -Dcode-audits
