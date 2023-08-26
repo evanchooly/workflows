@@ -1,4 +1,5 @@
 name: Pull Requests
+concurrency: pull_requests
 
 on:
   workflow_call:
