@@ -36,7 +36,7 @@ on:
         required: false
 
 env:
-  GITHUB_OAUTH: ${{ GH_TOKEN }}
+  GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
 
 jobs:
   Build:
