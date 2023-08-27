@@ -10,6 +10,6 @@ on:
 
 jobs:
   CodeAudits:
-    uses: ./build.yml
+    uses: ./build.yml@master
     with:
       maven-flags: -U install -Dcode-audits
