@@ -7,10 +7,6 @@ on:
         required: false
         type: string
         default: 11
-      maven:
-        required: false
-        type: string
-        default: mvn
     secrets:
       GH_PUSH_TOKEN:
         required: true
@@ -63,11 +59,16 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Find maven
+        id: maven
+        shell: bash
+        run: echo "maven=$( test -f mvnw  && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
+
 #      - name: Version
 #        id: vars
 #        shell: bash
 #        run: |
-#          VERSION=$(${{ inputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
+#          VERSION=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
 #          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 #
 #      - name: Check for snapshot
@@ -79,7 +80,7 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          ${{ inputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+          ${{ steps.maven.outputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
           -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
           -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
         env:
