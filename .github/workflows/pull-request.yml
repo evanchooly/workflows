@@ -19,7 +19,7 @@ on:
 
 jobs:
   Build:
-    uses: ./build.yml@master
+    uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       java: ${{ inputs.java }}
       os: ${{ inputs.os }}

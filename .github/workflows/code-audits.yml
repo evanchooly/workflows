@@ -10,6 +10,6 @@ on:
 
 jobs:
   CodeAudits:
-    uses: ./build.yml@master
+    uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
       maven-flags: -U install -Dcode-audits
