@@ -66,7 +66,7 @@ jobs:
       - name: Find maven
         id: maven
         shell: bash
-        run: echo "maven=$( [ -f mvnw ] && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
+        run: echo "maven=$( \[ -f mvnw \] && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
 
       - name: Build with Tests
         if: ${{ !inputs.saveBuild && !inputs.reuseBuild }}
