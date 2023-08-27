@@ -67,7 +67,7 @@ jobs:
         id: maven
         shell: bash
         run: |
-          MAVEN=$( [ -f mvnw && echo "./mvnw" || echo mvn )
+          MAVEN=$( [ -f mvnw ] && echo "./mvnw" || echo mvn )
           echo "MAVEN=$(echo MAVEN)" >> $GITHUB_ENV
 
       - name: Build with Tests
