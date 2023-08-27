@@ -11,10 +11,6 @@ on:
         required: false
         type: string
         default: 11
-      maven:
-        required: false
-        type: string
-        default: mvn
       maven-flags:
         required: false
         type: string
@@ -67,13 +63,20 @@ jobs:
           server-id: central
           cache: maven
 
+      - name: Find maven
+        id: maven
+        shell: bash
+        run: |
+          MAVEN=$( [ -f mvnw && echo "./mvnw" || echo mvn )
+          echo "MAVEN=$(echo MAVEN)" >> $GITHUB_ENV
+
       - name: Build with Tests
         if: ${{ !inputs.saveBuild && !inputs.reuseBuild }}
-        run: ${{ inputs.maven }} -U install ${{ inputs.maven-flags }}
+        run: $MAVEN -U install ${{ inputs.maven-flags }}
 
       - name: Build without Tests
         if: inputs.saveBuild
-        run: ${{ inputs.maven }} -U install -DskipTests ${{ inputs.maven-flags }}
+        run: $MAVEN -U install -DskipTests ${{ inputs.maven-flags }}
 
       - name: Cache build artifacts
         if: inputs.saveBuild
@@ -94,7 +97,7 @@ jobs:
 
       - name: Test without building
         if: inputs.reuseBuild
-        run: ${{ inputs.maven }} surefire:test ${{ inputs.maven-flags }}
+        run: $MAVEN surefire:test ${{ inputs.maven-flags }}
 
       - name: collect logs
         uses: actions/upload-artifact@v3

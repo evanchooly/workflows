@@ -7,26 +7,9 @@ on:
         required: false
         type: string
         default: 11
-      maven:
-        required: false
-        type: string
-        default: mvn
 
 jobs:
   CodeAudits:
-    runs-on: ubuntu-latest
-    name: Code Audits
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ inputs.java }}
-          distribution: 'temurin'
-          server-id: central
-          cache: maven
-
-      - name: Run Audits
-        run: ${{ inputs.maven }} -U install -Dcode-audits
+    uses: ./build.yml
+    with:
+      maven-flags: -U install -Dcode-audits
