@@ -12,4 +12,5 @@ jobs:
   CodeAudits:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
     with:
+      java: ${{ inputs.java }}
       maven-flags: -U install -Dcode-audits
