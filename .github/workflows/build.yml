@@ -78,20 +78,18 @@ jobs:
 
       - name: Cache build artifacts
         if: inputs.saveBuild
-        uses: actions/cache@v3
+        uses: actions/upload-artifact @v3
         with:
+          name: ${{ steps.maven-cache-key.outputs.key }}
           path: '**/target'
-          key: ${{ steps.maven-cache-key.outputs.key }}
-          restore-keys: ${{ steps.maven-cache-key.outputs.key }}
+          retention-days: 1
 
       - name: Restore cached build artifacts
         if: inputs.reuseBuild
-        uses: actions/cache@v3
+        uses: actions/download-artifact@v3
         with:
-          path: '**/target'
-          key: ${{ steps.maven-cache-key.outputs.key }}
-          restore-keys: ${{ steps.maven-cache-key.outputs.key }}
-          fail-on-cache-miss: true
+          name: ${{ steps.maven-cache-key.outputs.key }}
+          path: .
 
       - name: Test without building
         if: inputs.reuseBuild
