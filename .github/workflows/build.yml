@@ -74,7 +74,7 @@ jobs:
 
       - name: Build without Tests
         if: inputs.saveBuild
-        run: ${{ steps.maven.outputs.maven }} -U install -DskipTests ${{ inputs.maven-flags }}
+        run: ${{ steps.maven.outputs.maven }} -U package -DskipTests ${{ inputs.maven-flags }}
 
       - name: Cache build artifacts
         if: inputs.saveBuild
