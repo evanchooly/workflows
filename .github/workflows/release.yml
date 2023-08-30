@@ -80,7 +80,7 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          ${{ steps.maven.outputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git -Dmaven.site .skip=true -Drelease=true -DskipTests clean deploy
+          ${{ steps.maven.outputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git -Dmaven.site.skip=true -Drelease=true -DskipTests clean deploy
         env:
           SONATYPE_USERNAME : ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD : ${{ secrets.SONATYPE_PASSWORD }}
