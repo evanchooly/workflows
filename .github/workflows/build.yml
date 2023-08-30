@@ -103,6 +103,7 @@ jobs:
         with:
           name: "logs-${{ inputs.archive-name }}"
           path: |
+            **/target
             **/target/**/*.log
             **/target/**/*.err
           retention-days: 7
