@@ -10,7 +10,24 @@ on:
 
 jobs:
   CodeAudits:
-    uses: evanchooly/workflows/.github/workflows/build.yml@master
-    with:
-      java: ${{ inputs.java }}
-      maven-flags: -Dcode-audits
+    runs-on: ubuntu-latest
+    name: Code Audits
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java }}
+          distribution: 'temurin'
+          server-id: central
+          cache: maven
+
+      - name: Find maven
+        id: maven
+        shell: bash
+        run: echo "maven=$( test -f mvnw  && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
+
+      - name: Run Audits
+        run: ${{ steps.maven.outputs.maven }} -U install -Dcode-audits
