@@ -74,22 +74,24 @@ jobs:
 
       - name: Build without Tests
         if: inputs.saveBuild
-        run: ${{ steps.maven.outputs.maven }} -U package -DskipTests ${{ inputs.maven-flags }}
+        run: ${{ steps.maven.outputs.maven }} -U install -DskipTests ${{ inputs.maven-flags }}
 
       - name: Cache build artifacts
         if: inputs.saveBuild
-        uses: actions/upload-artifact @v3
+        uses: actions/cache@v3
         with:
-          name: ${{ steps.maven-cache-key.outputs.key }}
           path: '**/target'
-          retention-days: 1
+          key: ${{ steps.maven-cache-key.outputs.key }}
+          restore-keys: ${{ steps.maven-cache-key.outputs.key }}
 
       - name: Restore cached build artifacts
         if: inputs.reuseBuild
-        uses: actions/download-artifact@v3
+        uses: actions/cache@v3
         with:
-          name: ${{ steps.maven-cache-key.outputs.key }}
-          path: .
+          path: '**/target'
+          key: ${{ steps.maven-cache-key.outputs.key }}
+          restore-keys: ${{ steps.maven-cache-key.outputs.key }}
+          fail-on-cache-miss: true
 
       - name: Test without building
         if: inputs.reuseBuild
@@ -97,9 +99,10 @@ jobs:
 
       - name: collect logs
         uses: actions/upload-artifact@v3
-#        if: failure() && inputs.archive-name != ''
+        if: failure() && inputs.archive-name != ''
         with:
           name: "logs-${{ inputs.archive-name }}"
           path: |
-            .
+            **/target/**/*.log
+            **/target/**/*.err
           retention-days: 7
