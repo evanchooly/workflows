@@ -99,7 +99,7 @@ jobs:
 
       - name: collect logs
         uses: actions/upload-artifact@v3
-        if: failure() && inputs.archive-name != ''
+#        if: failure() && inputs.archive-name != ''
         with:
           name: "logs-${{ inputs.archive-name }}"
           path: |
