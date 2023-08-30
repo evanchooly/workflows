@@ -64,23 +64,23 @@ jobs:
         shell: bash
         run: echo "maven=$( test -f mvnw  && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
 
-#      - name: Version
-#        id: vars
-#        shell: bash
-#        run: |
-#          VERSION=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
-#          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
-#
-#      - name: Check for snapshot
-#        id: release
-#        shell: bash
-#        run: |
-#          echo "SNAPSHOT_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
+      - name: Version
+        id: vars
+        shell: bash
+        run: |
+          VERSION=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
+
+      - name: Check for snapshot
+        id: release
+        shell: bash
+        run: |
+          echo "SNAPSHOT_RELEASE=${{ endsWith( steps.vars.outputs.VERSION, '-SNAPSHOT' ) }} " >> $GITHUB_OUTPUT
 
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          ${{ steps.maven.outputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git -Dmaven.site.skip=true -Drelease=true -DskipTests deploy
+          ${{ steps.maven.outputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git -Dmaven.site .skip=true -Drelease=true -DskipTests clean deploy
         env:
           SONATYPE_USERNAME : ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD : ${{ secrets.SONATYPE_PASSWORD }}
