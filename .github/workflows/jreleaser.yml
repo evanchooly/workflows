@@ -63,6 +63,13 @@ jobs:
           VERSION=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 
+      - name: Root Artifact
+        id: root
+        shell: bash
+        run: |
+          ARTIFACTID=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          echo "ARTIFACTID=$(echo ARTIFACTID)" >> $GITHUB_OUTPUT
+
       - name: Check for snapshot
         id: release
         shell: bash
@@ -71,8 +78,8 @@ jobs:
 
       - name: Publish
         run: |
-          ${{ steps.maven.outputs.maven }} -e -Djreleaser clean deploy 
-          ${{ steps.maven.outputs.maven }} -e -Djreleaser jreleaser:full-release -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
+          ${{ steps.maven.outputs.maven }} -e -pl :${{ steps.root.outputs.ARTIFACTID }} clean deploy \
+            jreleaser:full-release -Djreleaser -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
