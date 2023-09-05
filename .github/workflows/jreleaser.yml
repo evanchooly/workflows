@@ -68,7 +68,7 @@ jobs:
         shell: bash
         run: |
           artifact_id=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
-          echo "artifact_id=$(echo artifact_id)" >> $GITHUB_OUTPUT
+          echo "artifact_id=$(echo $artifact_id)" >> $GITHUB_OUTPUT
 
       - name: Check for snapshot
         id: release
