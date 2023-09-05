@@ -67,8 +67,8 @@ jobs:
         id: root
         shell: bash
         run: |
-          ARTIFACTID=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
-          echo "ARTIFACTID=$(echo ARTIFACTID)" >> $GITHUB_OUTPUT
+          artifact_id=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.artifact_id -q -DforceStdout)
+          echo "artifact_id=$(echo artifact_id)" >> $GITHUB_OUTPUT
 
       - name: Check for snapshot
         id: release
@@ -78,7 +78,7 @@ jobs:
 
       - name: Publish
         run: |
-          ${{ steps.maven.outputs.maven }} -e -pl :${{ steps.root.outputs.ARTIFACTID }} clean deploy \
+          ${{ steps.maven.outputs.maven }} -e -pl :${{ steps.root.outputs.artifact_id }} clean deploy \
             jreleaser:full-release -Djreleaser -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
