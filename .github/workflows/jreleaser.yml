@@ -78,8 +78,8 @@ jobs:
 
       - name: Publish
         run: |
-          ${{ steps.maven.outputs.maven }} -e -pl :${{ steps.root.outputs.artifact_id }} clean deploy \
-            jreleaser:full-release -Djreleaser -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }}
+          ${{ steps.maven.outputs.maven }} -e -Djreleaser -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }} clean deploy 
+          ${{ steps.maven.outputs.maven }} -e -Djreleaser -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }} -N jreleaser:full-release
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
