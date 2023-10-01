@@ -81,8 +81,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            '**/target'
-            '~/.m2/repository`
+            **/target
+            ~/.m2/repository
           key: target-${{ steps.maven-cache-key.outputs.key }}
           restore-keys: target-${{ steps.maven-cache-key.outputs.key }}
 
@@ -91,8 +91,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            '**/target'
-            '~/.m2/repository`
+            **/target
+            ~/.m2/repository
           key: target-${{ steps.maven-cache-key.outputs.key }}
           restore-keys: target-${{ steps.maven-cache-key.outputs.key }}
           fail-on-cache-miss: true
