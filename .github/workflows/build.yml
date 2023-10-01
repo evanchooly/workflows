@@ -62,7 +62,6 @@ jobs:
           distribution: 'temurin'
           server-id: central
           cache: maven
-          key: m2-${{ steps.maven-cache-key.outputs.key }}
 
       - name: Find maven
         id: maven
@@ -90,8 +89,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/target'
-          key: ${{ steps.maven-cache-key.outputs.key }}
-          restore-keys: ${{ steps.maven-cache-key.outputs.key }}
+          key: target-${{ steps.maven-cache-key.outputs.key }}
+          restore-keys: target-${{ steps.maven-cache-key.outputs.key }}
           fail-on-cache-miss: true
 
       - name: Test without building
