@@ -52,7 +52,7 @@ jobs:
       - name: Generate cache key
         id: maven-cache-key
         run: |
-          echo "key=-cache-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "key=cache-${{ github.run_number }}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Setup Java
