@@ -52,7 +52,7 @@ jobs:
       - name: Generate cache key
         id: maven-cache-key
         run: |
-          echo "key=maven-cache-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "key=-cache-${{ github.run_number }}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Setup Java
@@ -62,6 +62,7 @@ jobs:
           distribution: 'temurin'
           server-id: central
           cache: maven
+          key: m2-${{ steps.maven-cache-key.outputs.key }}
 
       - name: Find maven
         id: maven
@@ -81,8 +82,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: '**/target'
-          key: ${{ steps.maven-cache-key.outputs.key }}
-          restore-keys: ${{ steps.maven-cache-key.outputs.key }}
+          key: target-${{ steps.maven-cache-key.outputs.key }}
+          restore-keys: target-${{ steps.maven-cache-key.outputs.key }}
 
       - name: Restore cached build artifacts
         if: inputs.reuseBuild
