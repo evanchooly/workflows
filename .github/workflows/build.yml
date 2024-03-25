@@ -102,7 +102,7 @@ jobs:
         run: ${{ steps.maven.outputs.maven }} surefire:test ${{ inputs.maven-flags }}
 
       - name: collect logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure() && inputs.archive-name != ''
         with:
           name: "logs-${{ inputs.archive-name }}"
