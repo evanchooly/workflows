@@ -23,6 +23,14 @@ jobs:
       java: ${{ inputs.java }}
       os: ${{ inputs.os }}
       maven-flags: ${{ inputs.maven-flags }}
+  Debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo actor = ${{ github.actor }}
+          echo event_name = ${{ github.event_name }}
+          echo ref = ${{ github.event.ref }}
   dependabot:
     if: ${{ github.actor == 'dependabot[bot]' && github.event_name == 'pull_request' &&
       ( github.event.ref == 'refs/heads/master' || github.event.ref == 'refs/heads/main' ) }}
