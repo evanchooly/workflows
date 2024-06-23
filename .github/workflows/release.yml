@@ -44,8 +44,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
           server-id: central
-          server-username: SONATYPE_USERNAME
-          server-password: SONATYPE_PASSWORD
+          server-username: SONATYPE_PUBLISH_USERNAME
+          server-password: SONATYPE_PUBLISH_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
@@ -74,7 +74,7 @@ jobs:
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests clean deploy
         env:
-          SONATYPE_USERNAME : ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD : ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME : ${{ secrets.SONATYPE_PUBLISH_USERNAME }}
+          SONATYPE_PASSWORD : ${{ secrets.SONATYPE_PUBLISH_TOKEN }}
           GPG_PASSPHRASE    : ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           GITHUB_OAUTH      : ${{ secrets.GH_PUSH_TOKEN }}
