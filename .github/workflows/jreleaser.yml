@@ -46,10 +46,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
           server-id: central
-          server-username: SONATYPE_USERNAME
-          server-password: SONATYPE_PASSWORD
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: GPG_PASSPHRASE
+          server-username: SONATYPE_PUBLISH_USERNAME
+          server-password: SONATYPE_PUBLISH_TOKEN
+#          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+#          gpg-passphrase: GPG_PASSPHRASE
 
       - name: Find maven
         id: maven
@@ -87,8 +87,8 @@ jobs:
           JRELEASER_GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{secrets.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{secrets.GPG_PRIVATE_KEY }}
-          JRELEASER_NEXUS2_PASSWORD: ${{secrets.SONATYPE_PASSWORD }}
-          JRELEASER_NEXUS2_USERNAME: ${{secrets.SONATYPE_USERNAME }}
+          JRELEASER_NEXUS2_PASSWORD: ${{secrets.SONATYPE_PUBLISH_TOKEN }}
+          JRELEASER_NEXUS2_USERNAME: ${{secrets.SONATYPE_PUBLISH_USERNAME }}
           MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
 
       - name: collect logs
