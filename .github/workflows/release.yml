@@ -10,13 +10,17 @@ on:
     secrets:
       GH_PUSH_TOKEN:
         required: true
-      GPG_PASSPHRASE:
+      MAVEN_GPG_PASSPHRASE:
         required: true
       GPG_PRIVATE_KEY:
         required: true
       SONATYPE_USERNAME:
         required: true
       SONATYPE_PASSWORD:
+        required: true
+      SONATYPE_PUBLISH_USERNAME:
+        required: true
+      SONATYPE_PUBLISH_TOKEN:
         required: true
 
       BLUESKY_USERNAME:
