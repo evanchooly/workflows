@@ -10,8 +10,6 @@ on:
     secrets:
       GH_PUSH_TOKEN:
         required: true
-      GPG_PASSPHRASE:
-        required: true
       GPG_PUBLIC_KEY:
         required: true
       GPG_PRIVATE_KEY:
@@ -48,8 +46,8 @@ jobs:
           server-id: central
           server-username: SONATYPE_PUBLISH_USERNAME
           server-password: SONATYPE_PUBLISH_TOKEN
-#          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-#          gpg-passphrase: GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Find maven
         id: maven
@@ -84,7 +82,7 @@ jobs:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
           JRELEASER_GITHUB_TOKEN: ${{secrets.GH_PUSH_TOKEN }}
-          JRELEASER_GPG_PASSPHRASE: ${{secrets.GPG_PASSPHRASE }}
+          JRELEASER_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{secrets.GPG_PUBLIC_KEY }}
           JRELEASER_GPG_SECRET_KEY: ${{secrets.GPG_PRIVATE_KEY }}
           JRELEASER_NEXUS2_PASSWORD: ${{secrets.SONATYPE_PUBLISH_TOKEN }}
