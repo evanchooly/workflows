@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 11
+      maven-flags:
+        required: false
+        type: string
+        default: ''
     secrets:
       GH_PUSH_TOKEN:
         required: true
@@ -74,7 +78,8 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          ${{ steps.maven.outputs.maven }} --no-transfer-progress -B --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+          ${{ steps.maven.outputs.maven }} ${{ inputs.maven-flags }} --no-transfer-progress -B --file pom.xml \
+            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests clean deploy
         env:
