@@ -20,11 +20,7 @@ on:
         required: true
       SONATYPE_USERNAME:
         required: true
-      SONATYPE_PASSWORD:
-        required: true
-      SONATYPE_PUBLISH_USERNAME:
-        required: true
-      SONATYPE_PUBLISH_TOKEN:
+      SONATYPE_TOKEN:
         required: true
 
       BLUESKY_USERNAME:
@@ -52,8 +48,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
           server-id: central
-          server-username: SONATYPE_PUBLISH_USERNAME
-          server-password: SONATYPE_PUBLISH_TOKEN
+          server-username: SONATYPE_USERNAME
+          server-password: SONATYPE_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
@@ -83,7 +79,7 @@ jobs:
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests clean deploy
         env:
-          SONATYPE_USERNAME       : ${{ secrets.SONATYPE_PUBLISH_USERNAME }}
-          SONATYPE_PASSWORD       : ${{ secrets.SONATYPE_PUBLISH_TOKEN }}
+          SONATYPE_USERNAME       : ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_TOKEN       : ${{ secrets.SONATYPE_TOKEN }}
           MAVEN_GPG_PASSPHRASE    : ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           GITHUB_OAUTH            : ${{ secrets.GH_PUSH_TOKEN }}
