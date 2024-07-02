@@ -78,7 +78,7 @@ jobs:
 
       - name: Cache build artifacts
         if: inputs.saveBuild
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/target
@@ -88,7 +88,7 @@ jobs:
 
       - name: Restore cached build artifacts
         if: inputs.reuseBuild
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/target
