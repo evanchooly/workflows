@@ -93,7 +93,7 @@ jobs:
 
       - name: collect logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: "jreleaser.log"
           path: '**/target/jreleaser/*'
