@@ -37,6 +37,7 @@ on:
 
 env:
   GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
+  DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
 jobs:
   Build:
