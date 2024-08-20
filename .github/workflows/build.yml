@@ -31,6 +31,11 @@ on:
         required: false
         type: boolean
         default: false
+    secrets:
+      DEVELOCITY_ACCESS_KEY:
+        required: false
+      GH_TOKEN:
+        required: false
 
 env:
   GITHUB_OAUTH: ${{ secrets.GH_TOKEN }}
