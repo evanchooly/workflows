@@ -33,7 +33,7 @@ on:
         default: false
     secrets:
       DEVELOCITY_ACCESS_KEY:
-        required: true
+        required: false
       GH_TOKEN:
         required: false
 
