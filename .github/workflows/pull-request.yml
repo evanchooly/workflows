@@ -19,6 +19,9 @@ on:
       DEVELOCITY_ACCESS_KEY:
         required: false
 
+env:
+  DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
+
 jobs:
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
