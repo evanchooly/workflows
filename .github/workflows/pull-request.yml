@@ -11,12 +11,6 @@ on:
         required: false
         type: string
         default: ""
-    secrets:
-      DEVELOCITY_ACCESS_KEY:
-        required: false
-
-env:
-  DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
 
 jobs:
   Build:
