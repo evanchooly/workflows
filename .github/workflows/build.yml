@@ -3,14 +3,14 @@ name: Build and Test
 on:
   workflow_call:
     inputs:
-      archive-name:
-        required: false
-        type: string
-        default: "${{ github.sha }}-${{ github.run_id }}"
       java:
         required: false
         type: string
         default: 11
+      archive-name:
+        required: false
+        type: string
+        default: "${{ github.sha }}-${{ github.run_id }}"
       maven-flags:
         required: false
         type: string
