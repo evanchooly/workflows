@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: 11
+      maven-flags:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   CodeAudits:
@@ -30,4 +34,4 @@ jobs:
         run: echo "maven=$( test -f mvnw  && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
 
       - name: Run Audits
-        run: ${{ steps.maven.outputs.maven }} -U install -Dcode-audits
+        run: ${{ steps.maven.outputs.maven }} -U ${{ inputs.maven-flags }} install -Dcode-audits
