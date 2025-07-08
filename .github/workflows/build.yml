@@ -73,11 +73,11 @@ jobs:
 
       - name: Build with Tests
         if: ${{ !inputs.saveBuild && !inputs.reuseBuild }}
-        run: ${{ steps.maven.outputs.maven }} -e -U install ${{ inputs.maven-flags }}
+        run: ${{ steps.maven.outputs.maven }} -e -U ${{ inputs.maven-flags }} install
 
       - name: Build without Tests
         if: inputs.saveBuild
-        run: ${{ steps.maven.outputs.maven }} -e -U install -DskipTests ${{ inputs.maven-flags }}
+        run: ${{ steps.maven.outputs.maven }} -e -U ${{ inputs.maven-flags }} install -DskipTests
 
       - name: Cache build artifacts
         if: inputs.saveBuild
