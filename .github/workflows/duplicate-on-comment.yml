@@ -3,7 +3,7 @@ name: Duplicate Issue on Comment
 on:
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
+      GH_TOKEN:
         required: true
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
       - name: Duplicate Issue Across Milestones
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
           script: |
             const script = require('./duplicate-issue.js');
             await script({github, context, core});
