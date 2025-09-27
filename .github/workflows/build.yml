@@ -50,7 +50,7 @@ jobs:
       maven-cache-key: ${{ steps.maven-cache-key.outputs.key }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Generate cache key
         id: maven-cache-key
