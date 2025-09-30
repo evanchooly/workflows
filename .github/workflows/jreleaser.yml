@@ -89,9 +89,10 @@ jobs:
           JRELEASER_GPG_SECRET_KEY: ${{secrets.GPG_PRIVATE_KEY }}
           JRELEASER_NEXUS2_USERNAME: ${{secrets.SONATYPE_USERNAME }}
           JRELEASER_NEXUS2_TOKEN: ${{secrets.SONATYPE_TOKEN }}
+          MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{secrets.MAVEN_GPG_PASSPHRASE }}
           SONATYPE_USERNAME: ${{secrets.SONATYPE_USERNAME }}
           SONATYPE_TOKEN: ${{secrets.SONATYPE_TOKEN }}
-          MASTODON_ACCESS_KEY: ${{secrets.MASTODON_ACCESS_KEY }}
 
       - name: collect logs
         if: always()
