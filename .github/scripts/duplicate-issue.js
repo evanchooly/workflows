@@ -1,6 +1,7 @@
 /**
  * GitHub Action script to duplicate issues across multiple milestones
  * Triggered by issue comments starting with "/duplicate"
+ * Supports version-based matching and automatic milestone creation
  */
 
 module.exports = async ({github, context, core}) => {
@@ -11,36 +12,44 @@ module.exports = async ({github, context, core}) => {
     console.log(`Processing comment from ${commenterLogin}: "${comment}"`);
 
     try {
-        // Parse the comment to extract milestones
-        const milestones = parseComment(comment);
-        if (!milestones) {
+        // Parse the comment to extract version/milestone specifications
+        const specifications = parseComment(comment);
+        if (!specifications) {
             await postErrorComment(github, context, issueNumber,
-                '❌ Invalid format. Please use: `/duplicate milestone1,milestone2,milestone3`\n\nExample: `/duplicate v2.0.0,v3.0.0,v4.0.0`');
+                '❌ Invalid format. Please use: `/duplicate version1,version2,milestone`\n\nExamples:\n- `/duplicate 2,3,4` (finds/creates latest milestones for major versions)\n- `/duplicate 2.1,3.0` (finds/creates latest milestones for minor versions)\n- `/duplicate v2.0.0` (exact milestone match or creates if not found)');
             return;
         }
 
-        if (milestones.length === 0) {
+        if (specifications.length === 0) {
             await postErrorComment(github, context, issueNumber,
-                '❌ No milestones specified. Please provide at least one milestone.');
+                '❌ No versions or milestones specified. Please provide at least one.');
             return;
         }
 
-        console.log(`Duplicating issue #${issueNumber} to milestones: ${milestones.join(', ')}`);
+        console.log(`Duplicating issue #${issueNumber} for: ${specifications.join(', ')}`);
 
         // Get original issue
         const originalIssue = await getOriginalIssue(github, context, issueNumber);
         console.log(`Original issue: "${originalIssue.title}"`);
 
-        // Get milestone mapping
-        const milestoneMap = await getMilestoneMap(github, context);
+        // Get all milestones (both open and closed)
+        const allMilestones = await getAllMilestones(github, context);
+        console.log(`Found ${allMilestones.length} total milestones`);
+
+        // Resolve specifications to actual milestone names
+        const resolvedMilestones = await resolveSpecifications(
+            github,
+            context,
+            specifications,
+            allMilestones
+        );
 
         // Create duplicate issues
         const results = await createDuplicateIssues(
             github,
             context,
             originalIssue,
-            milestones,
-            milestoneMap,
+            resolvedMilestones,
             issueNumber
         );
 
@@ -56,7 +65,7 @@ module.exports = async ({github, context, core}) => {
 };
 
 /**
- * Parse the comment to extract milestone names
+ * Parse the comment to extract version/milestone specifications
  */
 function parseComment(comment) {
     const duplicateMatch = comment.match(/^\/duplicate\s+(.+)$/m);
@@ -64,8 +73,127 @@ function parseComment(comment) {
         return null;
     }
 
-    const milestonesStr = duplicateMatch[1].trim();
-    return milestonesStr.split(',').map(m => m.trim()).filter(m => m.length > 0);
+    const specificationsStr = duplicateMatch[1].trim();
+    return specificationsStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+}
+
+/**
+ * Parse a semver version string (supports v1.2.3 or 1.2.3 format)
+ */
+function parseSemver(version) {
+    const match = version.match(/^v?(\d+)(?:\.(\d+)(?:\.(\d+))?)?$/);
+    if (!match) {
+        return null;
+    }
+
+    return {
+        major: parseInt(match[1], 10),
+        minor: match[2] !== undefined ? parseInt(match[2], 10) : null,
+        patch: match[3] !== undefined ? parseInt(match[3], 10) : null,
+        original: version
+    };
+}
+
+/**
+ * Format a milestone name from version components
+ */
+function formatMilestone(major, minor, patch) {
+    return `${major}.${minor}.${patch}`;
+}
+
+/**
+ * Check if a milestone matches a version prefix
+ */
+function milestoneMatchesVersion(milestone, versionSpec) {
+    const milestoneParsed = parseSemver(milestone.title);
+    if (!milestoneParsed) {
+        return false;
+    }
+
+    const specParsed = parseSemver(versionSpec);
+    if (!specParsed) {
+        return false;
+    }
+
+    // Major version must always match
+    if (milestoneParsed.major !== specParsed.major) {
+        return false;
+    }
+
+    // If minor is specified, it must match
+    if (specParsed.minor !== null && milestoneParsed.minor !== specParsed.minor) {
+        return false;
+    }
+
+    // If patch is specified, it must match exactly
+    if (specParsed.patch !== null && milestoneParsed.patch !== specParsed.patch) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Find the latest milestone for a given version specification
+ */
+function findLatestMilestone(milestones, versionSpec, openOnly = true) {
+    const candidates = milestones.filter(m => {
+        if (openOnly && m.state !== 'open') {
+            return false;
+        }
+        return milestoneMatchesVersion(m, versionSpec);
+    });
+
+    if (candidates.length === 0) {
+        return null;
+    }
+
+    // Sort by semver (descending)
+    candidates.sort((a, b) => {
+        const aParsed = parseSemver(a.title);
+        const bParsed = parseSemver(b.title);
+
+        if (aParsed.major !== bParsed.major) {
+            return bParsed.major - aParsed.major;
+        }
+        if (aParsed.minor !== bParsed.minor) {
+            return (bParsed.minor || 0) - (aParsed.minor || 0);
+        }
+        return (bParsed.patch || 0) - (aParsed.patch || 0);
+    });
+
+    return candidates[0];
+}
+
+/**
+ * Determine the next milestone version based on the latest closed milestone
+ */
+function determineNextVersion(milestones, versionSpec) {
+    const specParsed = parseSemver(versionSpec);
+    if (!specParsed) {
+        return null;
+    }
+
+    // Find the latest milestone (any state) for this version
+    const latest = findLatestMilestone(milestones, versionSpec, false);
+
+    if (latest) {
+        const latestParsed = parseSemver(latest.title);
+        // Increment patch version
+        return formatMilestone(
+            latestParsed.major,
+            latestParsed.minor || 0,
+            (latestParsed.patch || 0) + 1
+        );
+    }
+
+    // No existing milestones for this version spec
+    // If minor and/or patch specified, use them; otherwise default to 0
+    return formatMilestone(
+        specParsed.major,
+        specParsed.minor !== null ? specParsed.minor : 0,
+        specParsed.patch !== null ? specParsed.patch : 0
+    );
 }
 
 /**
@@ -81,40 +209,118 @@ async function getOriginalIssue(github, context, issueNumber) {
 }
 
 /**
- * Create a map of milestone names to IDs
+ * Get all milestones (both open and closed)
  */
-async function getMilestoneMap(github, context) {
-    const { data: openMilestones } = await github.rest.issues.listMilestones({
+async function getAllMilestones(github, context) {
+    const openMilestones = await github.paginate(github.rest.issues.listMilestones, {
         owner: context.repo.owner,
         repo: context.repo.repo,
         state: 'open'
     });
 
-    const milestoneMap = {};
-    openMilestones.forEach(milestone => {
-        milestoneMap[milestone.title] = milestone.number;
+    const closedMilestones = await github.paginate(github.rest.issues.listMilestones, {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        state: 'closed'
     });
 
-    return milestoneMap;
+    return [...openMilestones, ...closedMilestones];
 }
 
 /**
- * Create duplicate issues for each milestone
+ * Resolve version specifications to actual milestone objects
  */
-async function createDuplicateIssues(github, context, originalIssue, milestones, milestoneMap, issueNumber) {
-    const results = [];
+async function resolveSpecifications(github, context, specifications, allMilestones) {
+    const resolved = [];
 
-    for (const milestoneName of milestones) {
-        const milestoneId = milestoneMap[milestoneName];
+    for (const spec of specifications) {
+        console.log(`\nResolving specification: "${spec}"`);
 
-        if (!milestoneId) {
-            let message = `Milestone "${milestoneName}" not found in ${JSON.stringify(milestoneMap)}, skipping...`;
-            console.log(`⚠️  ${message}`);
-            results.push(`❌ ${message}`);
+        // Check for exact match first
+        const exactMatch = allMilestones.find(m => m.title === spec);
+        if (exactMatch) {
+            if (exactMatch.state === 'open') {
+                console.log(`  ✓ Exact match found (open): ${exactMatch.title}`);
+                resolved.push({
+                    name: exactMatch.title,
+                    id: exactMatch.number,
+                    created: false
+                });
+                continue;
+            } else {
+                console.log(`  ! Exact match found but closed: ${exactMatch.title}`);
+                // Continue to version matching logic
+            }
+        }
+
+        // Try version-based matching
+        const latestOpen = findLatestMilestone(allMilestones, spec, true);
+        if (latestOpen) {
+            console.log(`  ✓ Found latest open milestone: ${latestOpen.title}`);
+            resolved.push({
+                name: latestOpen.title,
+                id: latestOpen.number,
+                created: false
+            });
             continue;
         }
 
-        const newIssueBody = createNewIssueBody(originalIssue, milestoneName, issueNumber);
+        // No open milestone, need to create one
+        console.log(`  ! No open milestone found, creating new one...`);
+        const newVersion = determineNextVersion(allMilestones, spec);
+        if (!newVersion) {
+            console.log(`  ✗ Invalid version specification: ${spec}`);
+            resolved.push({
+                name: spec,
+                error: `Invalid version specification: ${spec}`
+            });
+            continue;
+        }
+
+        try {
+            const { data: newMilestone } = await github.rest.issues.createMilestone({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: newVersion,
+                state: 'open'
+            });
+
+            console.log(`  ✓ Created new milestone: ${newVersion} (ID: ${newMilestone.number})`);
+            resolved.push({
+                name: newVersion,
+                id: newMilestone.number,
+                created: true
+            });
+
+            // Add to allMilestones for future resolutions in this run
+            allMilestones.push(newMilestone);
+        } catch (error) {
+            console.log(`  ✗ Failed to create milestone: ${error.message}`);
+            resolved.push({
+                name: newVersion,
+                error: `Failed to create milestone: ${error.message}`
+            });
+        }
+    }
+
+    return resolved;
+}
+
+/**
+ * Create duplicate issues for each resolved milestone
+ */
+async function createDuplicateIssues(github, context, originalIssue, resolvedMilestones, issueNumber) {
+    const results = [];
+
+    for (const milestone of resolvedMilestones) {
+        // Check if resolution had an error
+        if (milestone.error) {
+            console.log(`⚠️  Skipping due to error: ${milestone.error}`);
+            results.push(`❌ ${milestone.error}`);
+            continue;
+        }
+
+        const newIssueBody = createNewIssueBody(originalIssue, milestone.name, issueNumber);
 
         try {
             const { data: newIssue } = await github.rest.issues.create({
@@ -122,16 +328,17 @@ async function createDuplicateIssues(github, context, originalIssue, milestones,
                 repo: context.repo.repo,
                 title: originalIssue.title,
                 body: newIssueBody,
-                milestone: milestoneId,
+                milestone: milestone.id,
                 labels: [ "forward-port" ].concat(originalIssue.labels.map(label => label.name)),
                 assignees: originalIssue.assignees.map(assignee => assignee.login)
             });
 
-            console.log(`✓ Created issue #${newIssue.number} for milestone "${milestoneName}"`);
-            results.push(`✅ [#${newIssue.number}](${newIssue.html_url}) created for milestone "${milestoneName}"`);
+            const createdTag = milestone.created ? ' (milestone created)' : '';
+            console.log(`✓ Created issue #${newIssue.number} for milestone "${milestone.name}"${createdTag}`);
+            results.push(`✅ [#${newIssue.number}](${newIssue.html_url}) created for milestone "${milestone.name}"${createdTag}`);
         } catch (error) {
-            console.log(`❌ Failed to create issue for milestone "${milestoneName}": ${error.message}`);
-            results.push(`❌ Failed to create issue for milestone "${milestoneName}": ${error.message}`);
+            console.log(`❌ Failed to create issue for milestone "${milestone.name}": ${error.message}`);
+            results.push(`❌ Failed to create issue for milestone "${milestone.name}": ${error.message}`);
         }
     }
 
@@ -180,4 +387,14 @@ ${results.join('\n')}
         issue_number: issueNumber,
         body: summaryComment
     });
+}
+
+// Export functions for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports.parseSemver = parseSemver;
+    module.exports.formatMilestone = formatMilestone;
+    module.exports.milestoneMatchesVersion = milestoneMatchesVersion;
+    module.exports.findLatestMilestone = findLatestMilestone;
+    module.exports.determineNextVersion = determineNextVersion;
+    module.exports.parseComment = parseComment;
 }

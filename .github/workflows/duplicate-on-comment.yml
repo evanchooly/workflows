@@ -1,5 +1,14 @@
 name: Duplicate Issue on Comment
 
+# This workflow duplicates issues across multiple milestones
+# Supports version-based matching and automatic milestone creation
+#
+# Usage examples:
+#   /duplicate 2,3,4           - Find/create latest milestones for major versions
+#   /duplicate 2.1,3.0         - Find/create latest milestones for minor versions
+#   /duplicate v2.0.0          - Exact milestone match or create if not found
+#   /duplicate 2.1.3,3,MyMilestone - Mix of version specs and exact milestone names
+
 on:
   workflow_call:
     secrets:
