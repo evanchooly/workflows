@@ -28,6 +28,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    concurrency:
+      group: "dependabot-automerge-${{ github.base_ref }}"
+      cancel-in-progress: false
     steps:
       - name: Dependabot metadata
         id: metadata
