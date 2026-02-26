@@ -45,6 +45,7 @@ jobs:
   Build:
     runs-on: ${{ inputs.os }}
     continue-on-error: ${{ inputs.optional }}
+    timeout-minutes: 30
     name: Build
     outputs:
       maven-cache-key: ${{ steps.maven-cache-key.outputs.key }}
@@ -87,7 +88,6 @@ jobs:
             **/target
             ~/.m2/repository
           key: target-${{ steps.maven-cache-key.outputs.key }}
-          restore-keys: target-${{ steps.maven-cache-key.outputs.key }}
 
       - name: Restore cached build artifacts
         if: inputs.reuseBuild
@@ -97,7 +97,6 @@ jobs:
             **/target
             ~/.m2/repository
           key: target-${{ steps.maven-cache-key.outputs.key }}
-          restore-keys: target-${{ steps.maven-cache-key.outputs.key }}
           fail-on-cache-miss: true
 
       - name: Test without building
