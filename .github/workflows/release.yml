@@ -55,16 +55,16 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Find maven
-        id: maven
-        shell: bash
-        run: echo "maven=$( test -f mvnw  && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 4.0.0-rc-5
 
       - name: Version
         id: vars
         shell: bash
         run: |
-          VERSION=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 
       - name: Check for snapshot
@@ -76,7 +76,7 @@ jobs:
       - name: Publish
         run: |
           export GPG_TTY=$(tty)
-          ${{ steps.maven.outputs.maven }} ${{ inputs.maven-flags }} --no-transfer-progress -B --file pom.xml \
+          mvn ${{ inputs.maven-flags }} --no-transfer-progress -B --file pom.xml \
             -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
             -Dmaven.site.skip=true -Drelease=true -DskipTests clean deploy
