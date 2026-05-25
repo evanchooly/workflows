@@ -51,23 +51,23 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 #          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Find maven
-        id: maven
-        shell: bash
-        run: echo "maven=$( test -f mvnw  && echo "./mvnw" || echo mvn )" >> $GITHUB_OUTPUT
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
+        with:
+          maven-version: 4.0.0-rc-5
 
       - name: Version
         id: vars
         shell: bash
         run: |
-          VERSION=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.version -q -DforceStdout)
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
 
       - name: Root Artifact
         id: root
         shell: bash
         run: |
-          artifact_id=$(${{ steps.maven.outputs.maven }} help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
+          artifact_id=$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)
           echo "artifact_id=$(echo $artifact_id)" >> $GITHUB_OUTPUT
 
       - name: Check for snapshot
@@ -78,8 +78,8 @@ jobs:
 
       - name: Publish
         run: |
-          ${{ steps.maven.outputs.maven }} -e -Drelease -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }} clean deploy 
-          ${{ steps.maven.outputs.maven }} -e -Drelease -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }} -N jreleaser:full-release
+          mvn -e -Drelease -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }} clean deploy 
+          mvn -e -Drelease -Dsnapshot.build=${{ steps.release.outputs.SNAPSHOT_RELEASE }} -N jreleaser:full-release
         env:
           BLUESKY_PASSWORD: ${{secrets.BLUESKY_PASSWORD }}
           BLUESKY_USERNAME: ${{secrets.BLUESKY_USERNAME }}
