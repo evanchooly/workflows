@@ -61,8 +61,8 @@ jobs:
       - name: Publish
         run: |
           mvn deploy ${{ inputs.maven-flags }} -Dmaven.site.skip=true -Ppublication -DskipTests -Dinvoker.skip=true
-#        env:
-#          SONATYPE_USERNAME       : ${{ secrets.SONATYPE_USERNAME }}
-#          SONATYPE_TOKEN       : ${{ secrets.SONATYPE_TOKEN }}
-#          MAVEN_GPG_PASSPHRASE    : ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-#          GITHUB_OAUTH            : ${{ secrets.GH_PUSH_TOKEN }}
+        env:
+#          SONATYPE_USERNAME   : ${{ secrets.SONATYPE_USERNAME }}
+#          SONATYPE_TOKEN      : ${{ secrets.SONATYPE_TOKEN }}
+          GPG_PASSPHRASE      : ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+#          GITHUB_OAUTH        : ${{ secrets.GH_PUSH_TOKEN }}
