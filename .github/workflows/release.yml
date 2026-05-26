@@ -71,17 +71,17 @@ jobs:
           mvn ${{ inputs.maven-flags }} --no-transfer-progress -B --file pom.xml \
             -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
-            -Dmaven.site.skip=true -Drelease=true -DskipTests clean deploy
+            -Dmaven.site.skip=true -Ppublication -DskipTests clean deploy
         env:
           SONATYPE_USERNAME       : ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_TOKEN       : ${{ secrets.SONATYPE_TOKEN }}
           MAVEN_GPG_PASSPHRASE    : ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           GITHUB_OAUTH            : ${{ secrets.GH_PUSH_TOKEN }}
-          JRELEASER_GITHUB_TOKEN: "bob"
-          JRELEASER_GPG_PASSPHRASE: "bob"
-          JRELEASER_GPG_PUBLIC_KEY: "bob"
-          JRELEASER_GPG_SECRET_KEY: "bob"
-          JRELEASER_NEXUS2_USERNAME: "bob"
-          JRELEASER_NEXUS2_TOKEN: "bob"
-          JRELEASER_MAVENCENTRAL_USERNAME: "bob"
-          JRELEASER_MAVENCENTRAL_TOKEN: "bob"
+#          JRELEASER_GITHUB_TOKEN: "bob"
+#          JRELEASER_GPG_PASSPHRASE: "bob"
+#          JRELEASER_GPG_PUBLIC_KEY: "bob"
+#          JRELEASER_GPG_SECRET_KEY: "bob"
+#          JRELEASER_NEXUS2_USERNAME: "bob"
+#          JRELEASER_NEXUS2_TOKEN: "bob"
+#          JRELEASER_MAVENCENTRAL_USERNAME: "bob"
+#          JRELEASER_MAVENCENTRAL_TOKEN: "bob"
