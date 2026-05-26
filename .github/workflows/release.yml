@@ -59,15 +59,9 @@ jobs:
         with:
           maven-version: 4.0.0-rc-5
 
-      - name: Version
-        id: vars
-        shell: bash
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION=$(echo $VERSION)" >> $GITHUB_OUTPUT
-
       - name: Publish
         run: |
+          mvn --version
           mvn ${{ inputs.maven-flags }} --no-transfer-progress -B --file pom.xml \
             -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }} \
             -Drepository.url=https://${{ github.actor }}:${{ secrets.GH_PUSH_TOKEN }}@github.com/${{ github.repository }}.git \
