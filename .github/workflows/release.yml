@@ -33,8 +33,7 @@ on:
         required: false
 
 jobs:
-  Release:
-    name: Publish Version
+  Publish:
     if: ${{ github.actor != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
