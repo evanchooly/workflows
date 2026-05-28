@@ -61,7 +61,7 @@ jobs:
 
       - name: Publish
         run: |
-          mvn -U deploy -Ppublication -DskipTests -Ddeploy.skip=true -Dinvoker.skip=true -N
+          mvn -U deploy -Ppublication -DskipTests -Ddeploy.skip=true -Dinvoker.skip=true
         env:
           SONATYPE_USERNAME   : ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_TOKEN      : ${{ secrets.SONATYPE_TOKEN }}
