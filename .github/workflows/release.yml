@@ -61,8 +61,6 @@ jobs:
 
       - name: Publish
         run: |
-          mvn -U -Ppublication help:effective-pom
-          mvn -U -Ppublication help:active-profiles
           mvn -U deploy -Ppublication -DskipTests -Ddeploy.skip=true -Dinvoker.skip=true -N
         env:
           SONATYPE_USERNAME   : ${{ secrets.SONATYPE_USERNAME }}
