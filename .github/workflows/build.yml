@@ -117,7 +117,7 @@ jobs:
         id: jacoco-check
         if: always()
         run: |
-          if find . -name "jacoco.exec" -path "*/target/*" | grep -q .; then
+          if [ "$( find . -name "jacoco.exec" )" ]; then
             ${{ steps.maven.outputs.maven }} -e jacoco:report ${{ inputs.maven-flags }}
             echo "exists=true" >> $GITHUB_OUTPUT
           else
