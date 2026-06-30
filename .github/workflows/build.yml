@@ -103,6 +103,14 @@ jobs:
         if: inputs.reuseBuild
         run: ${{ steps.maven.outputs.maven }} -e surefire:test ${{ inputs.maven-flags }}
 
+      - name: Generate JaCoCo reports
+        if: inputs.reuseBuild
+        run: |
+          if find . -name "jacoco.exec" -path "*/target/*" | grep -q .; then
+            ${{ steps.maven.outputs.maven }} -e jacoco:report ${{ inputs.maven-flags }}
+          fi
+        shell: bash
+
       - name: collect logs
         uses: actions/upload-artifact@v6
         if: failure() && inputs.archive-name != ''
