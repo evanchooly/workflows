@@ -113,7 +113,7 @@ jobs:
             **/target/**/*.err
           retention-days: 7
 
-      - name: Generate and detect JaCoCo reports
+      - name: Process JaCoCo artifacts
         id: jacoco-check
         if: always()
         run: |
