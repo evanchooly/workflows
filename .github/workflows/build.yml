@@ -112,23 +112,3 @@ jobs:
             **/target/**/*.log
             **/target/**/*.err
           retention-days: 7
-
-      - name: Process JaCoCo artifacts
-        id: jacoco-check
-        if: always()
-        run: |
-          if [ "$( find . -name "jacoco.exec" )" ]; then
-            ${{ steps.maven.outputs.maven }} -e jacoco:report ${{ inputs.maven-flags }}
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-
-      - name: Upload JaCoCo coverage reports
-        uses: actions/upload-artifact@v6
-        if: always() && steps.jacoco-check.outputs.exists == 'true' && inputs.archive-name != ''
-        with:
-          name: "test-coverage-${{ inputs.archive-name }}"
-          path: "**/target/site/jacoco/"
-          retention-days: 7
