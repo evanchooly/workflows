@@ -34,7 +34,7 @@ jobs:
           curl -o "duplicate-issue.js" https://raw.githubusercontent.com/evanchooly/workflows/refs/heads/master/.github/scripts/duplicate-issue.js
         working-directory: ${{ github.workspace }}
       - name: Duplicate Issue Across Milestones
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           script: |
