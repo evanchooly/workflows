@@ -11,10 +11,20 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      AUTOMERGE_TOKEN:
+        description: >-
+          Token used to enable auto-merge. Merges done with GITHUB_TOKEN don't trigger push workflows, so pass a PAT or
+          app token here if the merge should build (and release) the target branch. Dependabot runs only see
+          Dependabot secrets, so it must be defined there. Falls back to GITHUB_TOKEN.
+        required: false
 
 jobs:
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
+    # runs the PR's code, so keep it read-only even when the caller grants write for the auto-merge job
+    permissions:
+      contents: read
     with:
       java: ${{ inputs.java }}
       os: ubuntu-latest
@@ -41,4 +51,4 @@ jobs:
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.AUTOMERGE_TOKEN || secrets.GITHUB_TOKEN }}
