@@ -39,12 +39,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           java-version: ${{ inputs.java }}
           distribution: temurin
@@ -55,11 +55,10 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
 #          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - name: Set up Maven via sdkman
-        uses: sdkman/sdkman-action@main
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v5
         with:
-          candidate: maven
-          version: ${{ inputs.maven }}
+          maven-version: ${{ inputs.maven }}
 
       - name: Find maven
         id: maven

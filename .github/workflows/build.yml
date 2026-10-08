@@ -51,7 +51,7 @@ jobs:
       maven-cache-key: ${{ steps.maven-cache-key.outputs.key }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Generate cache key
         id: maven-cache-key
@@ -60,7 +60,7 @@ jobs:
         shell: bash
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           java-version: ${{ inputs.java }}
           distribution: temurin
@@ -82,7 +82,7 @@ jobs:
 
       - name: Cache build artifacts
         if: inputs.saveBuild
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             **/target
@@ -91,7 +91,7 @@ jobs:
 
       - name: Restore cached build artifacts
         if: inputs.reuseBuild
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             **/target
