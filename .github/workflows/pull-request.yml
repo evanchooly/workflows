@@ -22,6 +22,9 @@ on:
 jobs:
   Build:
     uses: evanchooly/workflows/.github/workflows/build.yml@master
+    # runs the PR's code, so keep it read-only even when the caller grants write for the auto-merge job
+    permissions:
+      contents: read
     with:
       java: ${{ inputs.java }}
       os: ubuntu-latest
